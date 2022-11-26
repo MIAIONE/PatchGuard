@@ -7,7 +7,7 @@ internal class Recognizer
 {
     private readonly MLContext _mlContext;
     private readonly PredictionEngine<InputFormat, OutputFormat> _predictionEngine;
-    private const string ONNX_MODEL_PATH = @"D:\downloads\elang\ddocr\ddddocr\ddddocr\common.onnx";
+    private const string ONNX_MODEL_PATH = @".\common.onnx";
     public Recognizer()
     {
         _mlContext = new();
