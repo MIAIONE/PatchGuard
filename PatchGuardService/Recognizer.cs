@@ -1,22 +1,28 @@
 ﻿global using Microsoft.ML;
 global using Microsoft.ML.Data;
-
+global using SixLabors.ImageSharp;
 namespace PatchGuardService;
 
 internal class Recognizer
 {
     private readonly MLContext _mlContext;
     private readonly PredictionEngine<InputFormat, OutputFormat> _predictionEngine;
-    private const string ONNX_MODEL_PATH = @".\common.onnx";
+    private const string ONNX_MODEL_PATH = @".\common_old.onnx";
     public Recognizer()
     {
         _mlContext = new();
         ITransformer predictionPipeline = GetPredictionPipeline(_mlContext);
         _predictionEngine = _mlContext.Model.CreatePredictionEngine<InputFormat, OutputFormat>(predictionPipeline);
     }
-    public long Predict()
+    public long Predict(Image img)
     {
+        img.Mutate(img => { img.Grayscale(); });
+        int size = img.Height * img.Width;
+        var rgb = new Rgb24[size];
+        img.CopyPixelDataTo(rgb);
+        List<float> gray = new List<Rgb24>(rgb).Select(x => { return (float)((x.B / 255) - 0.5) * 2; }).ToList();
         //TODO PRE PROCESSING
+        return 0;
     }
     private OutputFormat Forward(float[] x) // TODO: FIX INPUT
     {
