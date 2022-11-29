@@ -23,7 +23,7 @@ internal class Recognizer
     public long Predict(Image<Argb32> img)
     {
         img.Mutate(img_ => {
-            img_.Resize((img.Height/img.Width)*64,64);
+            img_.Resize(4,16);
             img_.Grayscale(); 
         });
         Console.WriteLine($"width:{img.Width}, heigh:{img.Height}");
@@ -73,13 +73,13 @@ internal class Recognizer
     }
     private class InputFormat
     {
-        [VectorType(64)] // TO FIX INPUT
+        //[VectorType(1, 1, 8192 )] // TO FIX INPUT
         [ColumnName("input1")]
         public float[] InputImage { get; set; }
     }
     private class OutputFormat
     {
         [ColumnName("output")] //TO FIX OUTPUT
-        public float[] OutPutImage { get; set; }
+        public long[] OutPutImage { get; set; }
     }
 }

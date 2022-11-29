@@ -11,7 +11,7 @@ internal class AppEntry
 {   
     internal static void Main()
     {
-        var img = Image.Load<Argb32>("C:\\Users\\Thinkpad\\Pictures\\Pixel Studio\\captcha.jpg");
+        var img = Image.Load<Argb32>(@".\Code.png");
         
         Recognizer ctl = new();
         ctl.Predict(img);
