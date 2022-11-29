@@ -22,10 +22,11 @@ internal class Recognizer
     }
     public long Predict(Image<Argb32> img)
     {
-        img.Mutate(img_ => {
-            img_.Resize(4,16);
-            img_.Grayscale(); 
-        });
+        img.Mutate(img_ =>  img_
+        .Grayscale()
+        .Resize(16, 4, false)
+        );
+        img.SaveAsBmp(@".\test.bmp");
         Console.WriteLine($"width:{img.Width}, heigh:{img.Height}");
         /*
         var gray = new float[img.Width, img.Height];
@@ -41,9 +42,9 @@ internal class Recognizer
         */
         var rgb = new Argb32[img.Width * img.Height];
         img.CopyPixelDataTo(rgb);
-        var gray = new List<Argb32>(rgb).Select(x => { return (float)((x.B / 255F) - 0.5F) * 2F; }).ToArray();
+        var gray = new List<Argb32>(rgb).Select(x => { return (((float)x.B / 255F) - 0.5F) * 2F; }).ToArray();
 
-        Console.WriteLine(Forward(gray).OutPutImage.Length);
+        Console.WriteLine(Forward(gray).OutPutImage[0]);
         
         //TODO PRE PROCESSING
         return 0;
@@ -79,6 +80,7 @@ internal class Recognizer
     }
     private class OutputFormat
     {
+        [VectorType(1, 64)]
         [ColumnName("output")] //TO FIX OUTPUT
         public long[] OutPutImage { get; set; }
     }
