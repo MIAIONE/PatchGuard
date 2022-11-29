@@ -1,5 +1,8 @@
 ﻿global using Microsoft.ML;
 global using Microsoft.ML.Data;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace PatchGuardService;
 
@@ -16,6 +19,8 @@ internal class Recognizer
     }
     public long Predict()
     {
+        return 0;
+
         //TODO PRE PROCESSING
     }
     private OutputFormat Forward(float[] x) // TODO: FIX INPUT
