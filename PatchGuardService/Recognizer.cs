@@ -74,7 +74,7 @@ internal class Recognizer
     }
     private class InputFormat
     {
-        [VectorType(1, 1, 64 )] // TO FIX INPUT
+        [VectorType(1, 1, 16, 4 )] // TO FIX INPUT
         [ColumnName("input1")]
         public float[] InputImage { get; set; }
     }
