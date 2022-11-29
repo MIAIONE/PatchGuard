@@ -41,7 +41,7 @@ internal class Recognizer
         */
         var rgb = new Argb32[img.Width * img.Height];
         img.CopyPixelDataTo(rgb);
-        var gray = new List<Argb32>(rgb).Select(x => { return (float)((x.B / 255) - 0.5) * 2; }).ToArray();
+        var gray = new List<Argb32>(rgb).Select(x => { return (float)((x.B / 255F) - 0.5F) * 2F; }).ToArray();
 
         Console.WriteLine(Forward(gray).OutPutImage.Length);
         
