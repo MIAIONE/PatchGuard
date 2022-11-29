@@ -1,6 +1,12 @@
 ﻿global using Microsoft.ML;
 global using Microsoft.ML.Data;
 global using SixLabors.ImageSharp;
+global using SixLabors.ImageSharp.PixelFormats;
+global using SixLabors.ImageSharp.Processing;
+global using SixLabors.ImageSharp.Advanced;
+global using SixLabors.ImageSharp.Memory;
+using SixLabors.ImageSharp.ColorSpaces;
+
 namespace PatchGuardService;
 
 internal class Recognizer
@@ -14,16 +20,35 @@ internal class Recognizer
         ITransformer predictionPipeline = GetPredictionPipeline(_mlContext);
         _predictionEngine = _mlContext.Model.CreatePredictionEngine<InputFormat, OutputFormat>(predictionPipeline);
     }
-    public long Predict(Image img)
+    public long Predict(Image<Argb32> img)
     {
-        img.Mutate(img => { img.Grayscale(); });
-        int size = img.Height * img.Width;
-        var rgb = new Rgb24[size];
+        img.Mutate(img_ => {
+            img_.Resize((img.Height/img.Width)*64,64);
+            img_.Grayscale(); 
+        });
+        Console.WriteLine($"width:{img.Width}, heigh:{img.Height}");
+        /*
+        var gray = new float[img.Width, img.Height];
+        for(int i = 0; i < img.Width; i++)
+        {
+            for(int j = 0; j < img.Height; j++)
+            {
+                gray[i,j] = (float)((img[i,j].B / 255) -0.5) *2;
+            }
+        }
+        Console.WriteLine(gray.ToString());
+        Console.WriteLine(gray[5, 5]);
+        */
+        var rgb = new Argb32[img.Width * img.Height];
         img.CopyPixelDataTo(rgb);
-        List<float> gray = new List<Rgb24>(rgb).Select(x => { return (float)((x.B / 255) - 0.5) * 2; }).ToList();
+        var gray = new List<Argb32>(rgb).Select(x => { return (float)((x.B / 255) - 0.5) * 2; }).ToArray();
+
+        Console.WriteLine(Forward(gray).OutPutImage.Length);
+        
         //TODO PRE PROCESSING
         return 0;
     }
+
     private OutputFormat Forward(float[] x) // TODO: FIX INPUT
     {
         var input = new InputFormat()
@@ -48,7 +73,7 @@ internal class Recognizer
     }
     private class InputFormat
     {
-        [VectorType(1, 64, 128 )] // TO FIX INPUT
+        [VectorType(64)] // TO FIX INPUT
         [ColumnName("input1")]
         public float[] InputImage { get; set; }
     }
